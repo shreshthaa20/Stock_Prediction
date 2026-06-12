@@ -1,0 +1,37 @@
+# config.py
+
+TICKERS    = ["AAPL", "MSFT", "AMZN", "GOOGL"]
+START_DATE = "2012-01-01"
+END_DATE   = "2024-11-09"
+
+# Feature engineering
+SMA_WINDOW   = 14
+RSI_WINDOW   = 14
+
+# Train / test
+TEST_SIZE    = 0.20
+SEQUENCE_LEN = 60
+
+# Random Forest
+RF_N_ESTIMATORS = 100
+RF_MAX_DEPTH    = None
+RF_RANDOM_STATE = 42
+
+# ANN
+ANN_UNITS     = 64
+ANN_EPOCHS    = 100
+ANN_BATCH     = 32
+ANN_VAL_SPLIT = 0.10
+ANN_PATIENCE  = 10
+
+# LSTM
+LSTM_UNITS     = 50
+LSTM_DROPOUT   = 0.20
+LSTM_EPOCHS    = 100
+LSTM_BATCH     = 32
+LSTM_VAL_SPLIT = 0.10
+LSTM_PATIENCE  = 10
+
+# Output
+OUTPUT_DIR = "outputs"
+FIGURE_DPI = 150
