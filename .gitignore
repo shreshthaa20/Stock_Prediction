@@ -11,13 +11,8 @@ venv/
 .ipynb_checkpoints/
 
 # Logs
-*.log
 streamlit.err.log
 streamlit.out.log
-
-# Data and models
-outputs/
-saved_models/
 
 # OS files
 .DS_Store
