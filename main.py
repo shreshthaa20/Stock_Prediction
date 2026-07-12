@@ -14,10 +14,19 @@ What it does
 8. Saves feature importance plot for RFR  ← NEW
 9. Saves metrics.csv summary
 """
+import random
+import numpy as np
+import tensorflow as tf
+
+# Lock all random seeds
+random.seed(42)
+np.random.seed(42)
+tf.random.set_seed(42)
 
 import logging
 import os
 import sys
+import time
 
 import config as cfg
 from data_loader import load_ticker, prepare_data, make_sequences
@@ -122,6 +131,7 @@ def main():
             results, best_params = run_ticker(ticker)
             all_results[ticker] = results
             all_best_params[ticker] = best_params
+            time.sleep(3)  # Wait 3 seconds to avoid rate limiting
         except FileNotFoundError as exc:
             log.error("Skipping %s — %s", ticker, exc)
         except Exception as exc:

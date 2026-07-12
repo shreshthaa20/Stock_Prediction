@@ -1,0 +1,5 @@
+Ticker,max_depth,max_features,min_samples_leaf,min_samples_split,n_estimators
+AAPL,,,2,2,200
+MSFT,10.0,,2,2,300
+AMZN,10.0,log2,4,5,300
+GOOGL,10.0,,4,5,300

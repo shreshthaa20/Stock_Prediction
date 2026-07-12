@@ -109,7 +109,7 @@ MODEL_COLORS = {
     "RFR": "#2563EB",
     "LSTM": "#7C3AED",
 }
-FEATURE_COLS = ["Open", "High", "Low", "Close", "Volume", "SMA", "RSI"]
+FEATURE_COLS = ["Open", "High", "Low", "Close", "Volume", "SMA", "EMA", "RSI"]
 
 
 @st.cache_data(show_spinner=False)
@@ -224,21 +224,13 @@ if "view" not in st.session_state:
 
 
 with st.sidebar:
-    
-    
     st.divider()
 
     ticker = st.selectbox("Select Stock", cfg.TICKERS, index=None, placeholder="Choose a stock")
-    model_name = st.selectbox(
-        "Select Model",
-        ["ANN", "RFR", "LSTM"],
-        index=None,
-        placeholder="Choose a model",
-    )
 
-    selections_ready = ticker is not None and model_name is not None
+    selections_ready = ticker is not None
     load_dashboard = st.button(
-        "Load",
+        "Load Dashboard",
         type="primary",
         use_container_width=True,
         disabled=not selections_ready,
@@ -266,20 +258,19 @@ if st.session_state.view == "all_companies":
     show_all_companies_comparison()
     st.stop()
 
-col1, col2 = st.columns(2)
+col1 = st.columns(1)[0]
 col1.metric("Selected Stock", ticker or "Not selected")
-col2.metric("Selected Model", model_name or "Not selected")
 
 if not selections_ready:
-    st.info("Choose a Stock and Model in the sidebar to continue.")
+    st.info("Choose a Stock in the sidebar to continue.")
     st.stop()
 
 if not model_files_exist(ticker):
     st.error(f"No saved models found for {ticker}. Run `python main.py` first.")
     st.stop()
 
-if not load_dashboard:
-    st.info("Click **Load** in the sidebar to load predictions.")
+if not load_dashboard and st.session_state.view != "stock":
+    st.info("Click **Load Dashboard** in the sidebar to load predictions.")
     st.stop()
 
 
@@ -315,103 +306,222 @@ predictions = {
     "RFR": rfr_pred,
     "LSTM": lstm_pred,
 }
-selected_pred = predictions[model_name]
-selected_metrics = metrics(actual, selected_pred)
+
+# Create tabs for structured navigation
+tab_comp, tab_ann, tab_rfr, tab_lstm = st.tabs([
+    "📈 Comparison (All Models)",
+    "🧠 ANN Model",
+    "🌲 RFR Model",
+    "🔄 LSTM Model"
+])
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TAB 1: COMPARISON (ALL MODELS VS ACTUAL)
+# ─────────────────────────────────────────────────────────────────────────────
+with tab_comp:
+    st.subheader(f"All Models vs Actual Price for {ticker}")
+    
+    fig, ax = plt.subplots(figsize=(12, 5))
+    ax.plot(actual, color=MODEL_COLORS["Actual"], linestyle="--", label="Actual", linewidth=1.5)
+    for name, pred in predictions.items():
+        ax.plot(pred, color=MODEL_COLORS[name], label=f"{name} Predicted", linewidth=1.5)
+    ax.set_xlabel("Trading Days (Test Set)")
+    ax.set_ylabel("Price (USD)")
+    ax.grid(True, alpha=0.25)
+    ax.legend()
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+    
+    st.markdown("""
+    **Graph Explanation:**
+    This comparison chart plots the actual stock closing prices alongside predictions from all three models (ANN, Random Forest, and LSTM) over the testing period.
+    - The **Actual** price is represented by the **dashed grey line**.
+    - The **ANN (Artificial Neural Network)** prediction is the **green line**.
+    - The **RFR (Random Forest Regressor)** prediction is the **blue line**.
+    - The **LSTM (Long Short-Term Memory)** prediction is the **purple line**.
+    
+    *Look for which model line tracks the actual price line most closely, especially during sharp trends or sudden reversals.*
+    """)
+
+    st.subheader("Performance Metrics Summary Table")
+    rows = []
+    for name, pred in predictions.items():
+        model_metrics = metrics(actual, pred)
+        rows.append(
+            {
+                "Model": name,
+                "MAE (Mean Absolute Error)": f"${model_metrics['MAE']:.2f}",
+                "RMSE (Root Mean Squared Error)": f"${model_metrics['RMSE']:.2f}",
+                "MAPE (Mean Absolute Percentage Error)": f"{model_metrics['MAPE']:.2f}%",
+            }
+        )
+    st.dataframe(rows, use_container_width=True, hide_index=True)
+    st.markdown("""
+    **Metrics Explanation:**
+    - **MAE (Mean Absolute Error):** On average, how many dollars the predictions deviate from actual values. Lower is better.
+    - **RMSE (Root Mean Squared Error):** Similiar to MAE, but penalizes larger errors more heavily. Lower is better.
+    - **MAPE (Mean Absolute Percentage Error):** The average percentage deviation of the predictions from actual prices. Lower is better.
+    """)
 
 
-st.subheader(f"{ticker} - {model_name} Performance")
-m1, m2, m3 = st.columns(3)
-m1.metric("MAE", f"${selected_metrics['MAE']:.2f}")
-m2.metric("RMSE", f"${selected_metrics['RMSE']:.2f}")
-m3.metric("MAPE", f"{selected_metrics['MAPE']:.2f}%")
+# ─────────────────────────────────────────────────────────────────────────────
+# TAB 2: ANN MODEL
+# ─────────────────────────────────────────────────────────────────────────────
+with tab_ann:
+    st.subheader(f"ANN Model vs Actual - {ticker}")
+    
+    m1, m2, m3 = st.columns(3)
+    ann_metrics = metrics(actual, predictions["ANN"])
+    m1.metric("ANN MAE", f"${ann_metrics['MAE']:.2f}")
+    m2.metric("ANN RMSE", f"${ann_metrics['RMSE']:.2f}")
+    m3.metric("ANN MAPE", f"{ann_metrics['MAPE']:.2f}%")
+    
+    fig, ax = plt.subplots(figsize=(12, 4))
+    ax.plot(actual, color=MODEL_COLORS["Actual"], linestyle="--", label="Actual", linewidth=1.5)
+    ax.plot(predictions["ANN"], color=MODEL_COLORS["ANN"], label="ANN Predicted", linewidth=1.6)
+    ax.set_xlabel("Trading Days")
+    ax.set_ylabel("Price (USD)")
+    ax.grid(True, alpha=0.25)
+    ax.legend()
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+    
+    st.markdown("""
+    **Graph Explanation:**
+    This graph displays the actual stock price (dashed line) versus the Artificial Neural Network (ANN) predictions (green line). The ANN uses dense feed-forward connections to map features to prices, indicating how well simple neural mapping captures daily stock trends.
+    """)
+    
+    st.subheader("Residual Analysis (ANN)")
+    residuals = actual - predictions["ANN"]
+    fig, ax = plt.subplots(figsize=(12, 3.5))
+    ax.bar(range(len(residuals)), residuals, color=np.where(residuals >= 0, "#059669", "#DC2626"), alpha=0.8)
+    ax.axhline(0, color="#111827", linewidth=1)
+    ax.set_xlabel("Trading Days")
+    ax.set_ylabel("Actual - Predicted")
+    ax.grid(True, axis="y", alpha=0.25)
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+    st.markdown("""
+    **Residuals Explanation:**
+    Residuals represent the prediction error (Actual minus Predicted). Green bars indicate the model under-predicted (actual was higher), while red bars indicate over-prediction (actual was lower). The ideal model has small bars hovering close to zero.
+    """)
 
-
-st.subheader("Price Prediction")
-fig, ax = plt.subplots(figsize=(12, 4))
-ax.plot(actual, color=MODEL_COLORS["Actual"], linestyle="--", label="Actual", linewidth=1.4)
-ax.plot(selected_pred, color=MODEL_COLORS[model_name], label=f"{model_name} predicted", linewidth=1.6)
-ax.set_xlabel("Trading Days")
-ax.set_ylabel("Closing Price")
-ax.grid(True, alpha=0.25)
-ax.legend()
-st.pyplot(fig, use_container_width=True)
-plt.close(fig)
-st.caption(
-    "This graph compares the actual closing price with the selected model's predicted price. "
-    "The closer the two lines are, the better the model is tracking the stock."
-)
-
-
-st.subheader("Residual Analysis")
-residuals = actual - selected_pred
-fig, ax = plt.subplots(figsize=(12, 3.5))
-ax.bar(range(len(residuals)), residuals, color=np.where(residuals >= 0, "#059669", "#DC2626"), alpha=0.8)
-ax.axhline(0, color="#111827", linewidth=1)
-ax.set_xlabel("Trading Days")
-ax.set_ylabel("Actual - Predicted")
-ax.grid(True, axis="y", alpha=0.25)
-st.pyplot(fig, use_container_width=True)
-plt.close(fig)
-st.caption(
-    "Residuals show the prediction error for each trading day: actual price minus predicted price. "
-    "Values near zero mean the model made smaller errors."
-)
-
-
-st.subheader("Training vs Validation Loss Curves")
-if model_name in ["ANN", "LSTM"]:
-    loss_curve_path = os.path.join(cfg.OUTPUT_DIR, f"{ticker}_{model_name}_loss_curve.png")
+    st.subheader("Training vs Validation Loss Curve")
+    loss_curve_path = os.path.join(cfg.OUTPUT_DIR, f"{ticker}_ANN_loss_curve.png")
     if os.path.exists(loss_curve_path):
-        st.image(
-            loss_curve_path,
-            caption=(
-                "Training loss and validation loss over epochs. "
-                "If training loss keeps decreasing while validation loss rises, the model is overfitting."
-            ),
-            use_container_width=True,
-        )
-        st.caption(
-            "This graph shows how the model learned during training. "
-            "A healthy model usually has training and validation loss decreasing together."
-        )
+        st.image(loss_curve_path, use_container_width=True)
+        st.markdown("""
+        **Loss Curve Explanation:**
+        The training vs. validation loss curve shows how the neural network learned over training epochs. A healthy training run features both training loss (solid line) and validation loss (dashed line) declining steadily and converging. If validation loss increases while training loss decreases, the model is overfitting.
+        """)
     else:
         st.warning(f"No Saved Loss Curve Found at `{loss_curve_path}`.")
-else:
-    st.info("Loss curves are shown for ANN and LSTM. Random Forest does not train over epochs.")
 
 
-st.subheader("Feature Importance Plot")
-feature_importance_path = os.path.join(cfg.OUTPUT_DIR, f"{ticker}_feature_importance.png")
-if os.path.exists(feature_importance_path):
-    st.image(
-        feature_importance_path,
-        caption="Random Forest feature importance. Higher bars contributed more to the prediction.",
-        use_container_width=True,
-    )
-    st.caption(
-        "This graph shows which input features Random Forest used most for prediction. "
-        "Higher importance means that feature had more influence on the model's decisions."
-    )
-else:
-    st.warning(
-        f"No Saved Feature-Importance Plot Found at `{feature_importance_path}`. "
-        "Run `python main.py` to generate it."
-    )
+# ─────────────────────────────────────────────────────────────────────────────
+# TAB 3: RFR MODEL
+# ─────────────────────────────────────────────────────────────────────────────
+with tab_rfr:
+    st.subheader(f"RFR Model vs Actual - {ticker}")
+    
+    m1, m2, m3 = st.columns(3)
+    rfr_metrics = metrics(actual, predictions["RFR"])
+    m1.metric("RFR MAE", f"${rfr_metrics['MAE']:.2f}")
+    m2.metric("RFR RMSE", f"${rfr_metrics['RMSE']:.2f}")
+    m3.metric("RFR MAPE", f"{rfr_metrics['MAPE']:.2f}%")
+    
+    fig, ax = plt.subplots(figsize=(12, 4))
+    ax.plot(actual, color=MODEL_COLORS["Actual"], linestyle="--", label="Actual", linewidth=1.5)
+    ax.plot(predictions["RFR"], color=MODEL_COLORS["RFR"], label="RFR Predicted", linewidth=1.6)
+    ax.set_xlabel("Trading Days")
+    ax.set_ylabel("Price (USD)")
+    ax.grid(True, alpha=0.25)
+    ax.legend()
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+    
+    st.markdown("""
+    **Graph Explanation:**
+    This graph displays the actual stock price (dashed line) versus the Random Forest Regressor (RFR) predictions (blue line). RFR uses an ensemble of decision trees, which are less prone to overfitting but may predict in steps rather than smooth curves.
+    """)
+    
+    st.subheader("Residual Analysis (RFR)")
+    residuals = actual - predictions["RFR"]
+    fig, ax = plt.subplots(figsize=(12, 3.5))
+    ax.bar(range(len(residuals)), residuals, color=np.where(residuals >= 0, "#059669", "#DC2626"), alpha=0.8)
+    ax.axhline(0, color="#111827", linewidth=1)
+    ax.set_xlabel("Trading Days")
+    ax.set_ylabel("Actual - Predicted")
+    ax.grid(True, axis="y", alpha=0.25)
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+    st.markdown("""
+    **Residuals Explanation:**
+    Residuals represent the prediction error (Actual minus Predicted). Green bars indicate the model under-predicted, while red bars indicate over-prediction.
+    """)
 
-if not hasattr(rfr, "feature_importances_"):
-    st.info("Feature importance is available for Random Forest models.")
+    st.subheader("Feature Importance Plot")
+    feature_importance_path = os.path.join(cfg.OUTPUT_DIR, f"{ticker}_feature_importance.png")
+    if os.path.exists(feature_importance_path):
+        st.image(feature_importance_path, use_container_width=True)
+        st.markdown("""
+        **Feature Importance Explanation:**
+        This chart ranks the engineered features by their predictive importance in the Random Forest model. Higher scores indicate the model relied more heavily on that feature (e.g., SMA, Close price, Volume) to make its decisions.
+        """)
+    else:
+        st.warning(f"No Saved Feature-Importance Plot Found at `{feature_importance_path}`. Run `python main.py` to generate it.")
 
 
-st.subheader(f"All Models Comparison - {ticker}")
-rows = []
-for name, pred in predictions.items():
-    model_metrics = metrics(actual, pred)
-    rows.append(
-        {
-            "Model": name,
-            "MAE": model_metrics["MAE"],
-            "RMSE": model_metrics["RMSE"],
-            "MAPE": model_metrics["MAPE"],
-        }
-    )
-st.dataframe(rows, use_container_width=True, hide_index=True)
+# ─────────────────────────────────────────────────────────────────────────────
+# TAB 4: LSTM MODEL
+# ─────────────────────────────────────────────────────────────────────────────
+with tab_lstm:
+    st.subheader(f"LSTM Model vs Actual - {ticker}")
+    
+    m1, m2, m3 = st.columns(3)
+    lstm_metrics = metrics(actual, predictions["LSTM"])
+    m1.metric("LSTM MAE", f"${lstm_metrics['MAE']:.2f}")
+    m2.metric("LSTM RMSE", f"${lstm_metrics['RMSE']:.2f}")
+    m3.metric("LSTM MAPE", f"{lstm_metrics['MAPE']:.2f}%")
+    
+    fig, ax = plt.subplots(figsize=(12, 4))
+    ax.plot(actual, color=MODEL_COLORS["Actual"], linestyle="--", label="Actual", linewidth=1.5)
+    ax.plot(predictions["LSTM"], color=MODEL_COLORS["LSTM"], label="LSTM Predicted", linewidth=1.6)
+    ax.set_xlabel("Trading Days")
+    ax.set_ylabel("Price (USD)")
+    ax.grid(True, alpha=0.25)
+    ax.legend()
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+    
+    st.markdown("""
+    **Graph Explanation:**
+    This graph displays the actual stock price (dashed line) versus the Long Short-Term Memory (LSTM) network predictions (purple line). LSTM is a recurrent neural network designed for sequence processing, allowing it to capture historical price trends and momentum.
+    """)
+    
+    st.subheader("Residual Analysis (LSTM)")
+    residuals = actual - predictions["LSTM"]
+    fig, ax = plt.subplots(figsize=(12, 3.5))
+    ax.bar(range(len(residuals)), residuals, color=np.where(residuals >= 0, "#059669", "#DC2626"), alpha=0.8)
+    ax.axhline(0, color="#111827", linewidth=1)
+    ax.set_xlabel("Trading Days")
+    ax.set_ylabel("Actual - Predicted")
+    ax.grid(True, axis="y", alpha=0.25)
+    st.pyplot(fig, use_container_width=True)
+    plt.close(fig)
+    st.markdown("""
+    **Residuals Explanation:**
+    Residuals represent the prediction error (Actual minus Predicted). Green bars indicate the model under-predicted, while red bars indicate over-prediction.
+    """)
+
+    st.subheader("Training vs Validation Loss Curve")
+    loss_curve_path = os.path.join(cfg.OUTPUT_DIR, f"{ticker}_LSTM_loss_curve.png")
+    if os.path.exists(loss_curve_path):
+        st.image(loss_curve_path, use_container_width=True)
+        st.markdown("""
+        **Loss Curve Explanation:**
+        The training vs. validation loss curve shows how the neural network learned over training epochs. A healthy training run features both training loss (solid line) and validation loss (dashed line) declining steadily and converging. If validation loss increases while training loss decreases, the model is overfitting.
+        """)
+    else:
+        st.warning(f"No Saved Loss Curve Found at `{loss_curve_path}`.")
+

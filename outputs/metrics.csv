@@ -1,13 +1,13 @@
-Ticker,Model,MAE,RMSE,MAPE
-AAPL,ANN,2.91,3.81,1.62
-AAPL,RFR,13.78,22.36,6.75
-AAPL,LSTM,4.72,6.09,2.62
-MSFT,ANN,8.25,10.91,2.35
-MSFT,RFR,37.38,54.77,9.44
-MSFT,LSTM,12.5,15.51,3.55
-AMZN,ANN,2.47,3.26,1.82
-AMZN,RFR,3.63,5.06,2.54
-AMZN,LSTM,3.98,5.23,2.95
-GOOGL,ANN,2.0,2.67,1.59
-GOOGL,RFR,7.16,12.01,4.72
-GOOGL,LSTM,3.81,4.83,3.03
+Ticker,Model,MAE,RMSE,MAPE,RFR_Best_Params
+AAPL,ANN,4.34,5.75,2.35,
+AAPL,RFR,13.37,21.91,6.53,"{""max_depth"": null, ""max_features"": null, ""min_samples_leaf"": 2, ""min_samples_split"": 2, ""n_estimators"": 200}"
+AAPL,LSTM,5.6,7.15,3.04,
+MSFT,ANN,4.41,5.67,1.39,
+MSFT,RFR,38.12,55.52,9.64,"{""max_depth"": 10, ""max_features"": null, ""min_samples_leaf"": 2, ""min_samples_split"": 2, ""n_estimators"": 300}"
+MSFT,LSTM,13.34,16.7,3.81,
+AMZN,ANN,2.75,3.59,2.02,
+AMZN,RFR,3.68,5.11,2.59,"{""max_depth"": 10, ""max_features"": ""log2"", ""min_samples_leaf"": 4, ""min_samples_split"": 5, ""n_estimators"": 300}"
+AMZN,LSTM,3.66,4.83,2.72,
+GOOGL,ANN,1.99,2.67,1.58,
+GOOGL,RFR,7.24,11.94,4.83,"{""max_depth"": 10, ""max_features"": null, ""min_samples_leaf"": 4, ""min_samples_split"": 5, ""n_estimators"": 300}"
+GOOGL,LSTM,3.35,4.27,2.67,
