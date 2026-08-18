@@ -6,7 +6,6 @@ END_DATE   = "2024-11-09"
 
 # Feature engineering
 SMA_WINDOW   = 14
-EMA_WINDOW   = 14
 RSI_WINDOW   = 14
 
 # Train / test

@@ -35,7 +35,7 @@ os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
 plt.style.use("seaborn-v0_8-whitegrid")
 COLORS = {"ANN": "#1f77b4", "RFR": "#2ca02c", "LSTM": "#d62728"}
-FEATURE_COLS = ["Open", "High", "Low", "Close", "Volume", "SMA", "EMA", "RSI"]
+FEATURE_COLS = ["Open", "High", "Low", "Close", "Volume", "SMA", "RSI"]
 
 
 # ─── Metrics ─────────────────────────────────────────────────────────────────

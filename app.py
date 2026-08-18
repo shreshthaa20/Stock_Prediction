@@ -109,7 +109,7 @@ MODEL_COLORS = {
     "RFR": "#2563EB",
     "LSTM": "#7C3AED",
 }
-FEATURE_COLS = ["Open", "High", "Low", "Close", "Volume", "SMA", "EMA", "RSI"]
+FEATURE_COLS = ["Open", "High", "Low", "Close", "Volume", "SMA", "RSI"]
 
 
 @st.cache_data(show_spinner=False)
@@ -524,4 +524,3 @@ with tab_lstm:
         """)
     else:
         st.warning(f"No Saved Loss Curve Found at `{loss_curve_path}`.")
-

@@ -31,10 +31,6 @@ def _sma(close: pd.Series, w: int) -> pd.Series:
     return close.rolling(w).mean()
 
 
-def _ema(close: pd.Series, w: int) -> pd.Series:
-    return close.ewm(span=w, adjust=False).mean()
-
-
 def _rsi(close: pd.Series, w: int) -> pd.Series:
     delta = close.diff()
     gain  = delta.clip(lower=0).rolling(w).mean()
@@ -64,7 +60,6 @@ def load_ticker(ticker: str, start: str, end: str) -> pd.DataFrame:
 
     df = raw[["Open", "High", "Low", "Close", "Volume"]].copy()
     df["SMA"]    = _sma(df["Close"], cfg.SMA_WINDOW)
-    df["EMA"]    = _ema(df["Close"], cfg.EMA_WINDOW)
     df["RSI"]    = _rsi(df["Close"], cfg.RSI_WINDOW)
     df["Target"] = df["Close"].shift(-1)   # predict next-day close
     df.dropna(inplace=True)
@@ -76,7 +71,7 @@ def load_ticker(ticker: str, start: str, end: str) -> pd.DataFrame:
 
 # ─── Split + scale ───────────────────────────────────────────────────────────
 
-FEATURE_COLS = ["Open", "High", "Low", "Close", "Volume", "SMA", "EMA", "RSI"]
+FEATURE_COLS = ["Open", "High", "Low", "Close", "Volume", "SMA", "RSI"]
 
 
 def prepare_data(df: pd.DataFrame):

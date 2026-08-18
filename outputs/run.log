@@ -1,88 +1,54 @@
-18:45:12  INFO      -------------------------------------------------------
-18:45:12  INFO        Processing: AAPL
-18:45:12  INFO      -------------------------------------------------------
-18:45:12  INFO      Downloading AAPL from Yahoo Finance ...
-18:45:14  INFO      AAPL -> 3220 rows  |  Close 11.86 - 234.72
-18:45:14  INFO      Split -> train 2576 | test 644
-18:45:14  INFO      Tuning Random Forest with GridSearchCV ...
-18:48:54  INFO      Random Forest tuned. Best params: {'max_depth': None, 'max_features': None, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 200}
-18:48:54  INFO      Training ANN ...
-18:48:55  WARNING   TensorFlow GPU support is not available on native Windows for TensorFlow >= 2.11. Even if CUDA/cuDNN are installed, GPU will not be used. Please use WSL2 or the TensorFlow-DirectML plugin.
-18:49:03  INFO      ANN trained for 16 epochs.
-18:49:03  INFO      Training LSTM ...
-18:50:03  INFO      LSTM trained for 35 epochs.
-18:50:03  INFO      Models saved -> saved_models\AAPL/
-18:50:05  INFO      Saved  outputs\AAPL_ANN.png
-18:50:05  INFO      Saved  outputs\AAPL_RFR.png
-18:50:06  INFO      Saved  outputs\AAPL_LSTM.png
-18:50:06  INFO      Saved  outputs\AAPL_comparison.png
-18:50:07  INFO      Saved  outputs\AAPL_residuals.png
-18:50:07  INFO      Saved  outputs\AAPL_ANN_loss_curve.png
-18:50:07  INFO      Saved  outputs\AAPL_LSTM_loss_curve.png
-18:50:09  INFO      Saved  outputs\AAPL_feature_importance.png
-18:50:12  INFO      -------------------------------------------------------
-18:50:12  INFO        Processing: MSFT
-18:50:12  INFO      -------------------------------------------------------
-18:50:12  INFO      Downloading MSFT from Yahoo Finance ...
-18:50:13  INFO      MSFT -> 3220 rows  |  Close 21.14 - 460.33
-18:50:13  INFO      Split -> train 2576 | test 644
-18:50:13  INFO      Tuning Random Forest with GridSearchCV ...
-18:54:22  INFO      Random Forest tuned. Best params: {'max_depth': 10, 'max_features': None, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 300}
-18:54:22  INFO      Training ANN ...
-18:54:31  INFO      ANN trained for 19 epochs.
-18:54:31  INFO      Training LSTM ...
-18:55:16  INFO      LSTM trained for 29 epochs.
-18:55:16  INFO      Models saved -> saved_models\MSFT/
-18:55:18  INFO      Saved  outputs\MSFT_ANN.png
-18:55:18  INFO      Saved  outputs\MSFT_RFR.png
-18:55:18  INFO      Saved  outputs\MSFT_LSTM.png
-18:55:19  INFO      Saved  outputs\MSFT_comparison.png
-18:55:19  INFO      Saved  outputs\MSFT_residuals.png
-18:55:19  INFO      Saved  outputs\MSFT_ANN_loss_curve.png
-18:55:20  INFO      Saved  outputs\MSFT_LSTM_loss_curve.png
-18:55:20  INFO      Saved  outputs\MSFT_feature_importance.png
-18:55:23  INFO      -------------------------------------------------------
-18:55:23  INFO        Processing: AMZN
-18:55:23  INFO      -------------------------------------------------------
-18:55:23  INFO      Downloading AMZN from Yahoo Finance ...
-18:55:24  INFO      AMZN -> 3220 rows  |  Close 8.93 - 210.05
-18:55:24  INFO      Split -> train 2576 | test 644
-18:55:24  INFO      Tuning Random Forest with GridSearchCV ...
-18:59:20  INFO      Random Forest tuned. Best params: {'max_depth': 10, 'max_features': 'log2', 'min_samples_leaf': 4, 'min_samples_split': 5, 'n_estimators': 300}
-18:59:20  INFO      Training ANN ...
-18:59:28  INFO      ANN trained for 17 epochs.
-18:59:28  INFO      Training LSTM ...
-19:01:00  INFO      LSTM trained for 55 epochs.
-19:01:00  INFO      Models saved -> saved_models\AMZN/
-19:01:02  INFO      Saved  outputs\AMZN_ANN.png
-19:01:02  INFO      Saved  outputs\AMZN_RFR.png
-19:01:02  INFO      Saved  outputs\AMZN_LSTM.png
-19:01:02  INFO      Saved  outputs\AMZN_comparison.png
-19:01:03  INFO      Saved  outputs\AMZN_residuals.png
-19:01:03  INFO      Saved  outputs\AMZN_ANN_loss_curve.png
-19:01:03  INFO      Saved  outputs\AMZN_LSTM_loss_curve.png
-19:01:03  INFO      Saved  outputs\AMZN_feature_importance.png
-19:01:06  INFO      -------------------------------------------------------
-19:01:06  INFO        Processing: GOOGL
-19:01:06  INFO      -------------------------------------------------------
-19:01:06  INFO      Downloading GOOGL from Yahoo Finance ...
-19:01:07  INFO      GOOGL -> 3220 rows  |  Close 13.87 - 189.72
-19:01:07  INFO      Split -> train 2576 | test 644
-19:01:07  INFO      Tuning Random Forest with GridSearchCV ...
-19:05:08  INFO      Random Forest tuned. Best params: {'max_depth': 10, 'max_features': None, 'min_samples_leaf': 4, 'min_samples_split': 5, 'n_estimators': 300}
-19:05:08  INFO      Training ANN ...
-19:05:25  INFO      ANN trained for 42 epochs.
-19:05:25  INFO      Training LSTM ...
-19:06:07  INFO      LSTM trained for 23 epochs.
-19:06:07  INFO      Models saved -> saved_models\GOOGL/
-19:06:09  INFO      Saved  outputs\GOOGL_ANN.png
-19:06:09  INFO      Saved  outputs\GOOGL_RFR.png
-19:06:09  INFO      Saved  outputs\GOOGL_LSTM.png
-19:06:09  INFO      Saved  outputs\GOOGL_comparison.png
-19:06:10  INFO      Saved  outputs\GOOGL_residuals.png
-19:06:10  INFO      Saved  outputs\GOOGL_ANN_loss_curve.png
-19:06:10  INFO      Saved  outputs\GOOGL_LSTM_loss_curve.png
-19:06:10  INFO      Saved  outputs\GOOGL_feature_importance.png
-19:06:13  INFO      Saved  outputs\rmse_all_tickers.png
-19:06:14  INFO      Saved  outputs\all_companies_model_comparison.png
-19:06:14  INFO      All done. Check the outputs/ folder for plots and metrics.csv
+09:43:47  INFO      -------------------------------------------------------
+09:43:47  INFO        Processing: AAPL
+09:43:47  INFO      -------------------------------------------------------
+09:43:47  INFO      Downloading AAPL from Yahoo Finance ...
+09:43:49  INFO      AAPL -> 3220 rows  |  Close 11.85 - 234.52
+09:43:49  INFO      Split -> train 2576 | test 644
+09:43:49  INFO      Tuning Random Forest with GridSearchCV ...
+09:50:38  INFO      Random Forest tuned. Best params: {'max_depth': None, 'max_features': None, 'min_samples_leaf': 2, 'min_samples_split': 5, 'n_estimators': 200}
+09:50:38  INFO      Training ANN ...
+09:50:45  WARNING   TensorFlow GPU support is not available on native Windows for TensorFlow >= 2.11. Even if CUDA/cuDNN are installed, GPU will not be used. Please use WSL2 or the TensorFlow-DirectML plugin.
+09:51:22  INFO      ANN trained for 37 epochs.
+09:51:22  INFO      Training LSTM ...
+09:52:53  INFO      LSTM trained for 31 epochs.
+09:52:54  INFO      Models saved -> saved_models\AAPL/
+09:52:55  INFO      -------------------------------------------------------
+09:52:55  INFO        Processing: MSFT
+09:52:55  INFO      -------------------------------------------------------
+09:52:55  INFO      Downloading MSFT from Yahoo Finance ...
+09:52:57  INFO      MSFT -> 3220 rows  |  Close 21.14 - 460.33
+09:52:57  INFO      Split -> train 2576 | test 644
+09:52:57  INFO      Tuning Random Forest with GridSearchCV ...
+09:57:03  INFO      Random Forest tuned. Best params: {'max_depth': 10, 'max_features': None, 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 300}
+09:57:03  INFO      Training ANN ...
+09:57:17  INFO      ANN trained for 40 epochs.
+09:57:17  INFO      Training LSTM ...
+09:57:56  INFO      LSTM trained for 24 epochs.
+09:57:56  INFO      Models saved -> saved_models\MSFT/
+09:57:57  INFO      -------------------------------------------------------
+09:57:57  INFO        Processing: AMZN
+09:57:57  INFO      -------------------------------------------------------
+09:57:57  INFO      Downloading AMZN from Yahoo Finance ...
+09:57:58  INFO      AMZN -> 3220 rows  |  Close 8.93 - 210.05
+09:57:58  INFO      Split -> train 2576 | test 644
+09:57:58  INFO      Tuning Random Forest with GridSearchCV ...
+10:02:09  INFO      Random Forest tuned. Best params: {'max_depth': None, 'max_features': None, 'min_samples_leaf': 4, 'min_samples_split': 10, 'n_estimators': 100}
+10:02:09  INFO      Training ANN ...
+10:02:20  INFO      ANN trained for 19 epochs.
+10:02:20  INFO      Training LSTM ...
+10:03:11  INFO      LSTM trained for 34 epochs.
+10:03:11  INFO      Models saved -> saved_models\AMZN/
+10:03:12  INFO      -------------------------------------------------------
+10:03:12  INFO        Processing: GOOGL
+10:03:12  INFO      -------------------------------------------------------
+10:03:12  INFO      Downloading GOOGL from Yahoo Finance ...
+10:03:14  INFO      GOOGL -> 3220 rows  |  Close 13.87 - 189.72
+10:03:14  INFO      Split -> train 2576 | test 644
+10:03:14  INFO      Tuning Random Forest with GridSearchCV ...
+10:07:12  INFO      Random Forest tuned. Best params: {'max_depth': 10, 'max_features': None, 'min_samples_leaf': 4, 'min_samples_split': 2, 'n_estimators': 300}
+10:07:13  INFO      Training ANN ...
+10:07:42  INFO      ANN trained for 53 epochs.
+10:07:42  INFO      Training LSTM ...
+10:10:00  INFO      LSTM trained for 57 epochs.
+10:10:00  INFO      Models saved -> saved_models\GOOGL/
+10:10:01  INFO      All done. Check the outputs/ folder for plots and metrics.csv
