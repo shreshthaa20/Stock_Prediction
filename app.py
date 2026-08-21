@@ -1121,8 +1121,8 @@ st.markdown(
     <div class="footer">
         © 2026 <strong>StockSight</strong> — Multi‑Model Stock Prediction Dashboard<br/>
         <a href="{DEPLOYED_URL}" target="_blank">🌐 Live Demo</a> •
-        <a href="https://github.com/shreshthaa20/Stock_Prediction" target="_blank">
-            <img src="https://img.shields.io/github/stars/shreshthaa20/Stock_Prediction?style=social"
+        <a href="https://github.com/shreshthaa20/Stock_Prediction_using-_machine_learning" target="_blank">
+            <img src="https://img.shields.io/github/stars/shreshthaa20/Stock_Prediction_using-_machine_learning?style=social"
                  alt="GitHub stars" style="vertical-align:middle;">
         </a>
     </div>
