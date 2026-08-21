@@ -1,0 +1,182 @@
+/* ── assets/custom.css ─────────────────────────────────────────────────── */
+/* Enhanced StockSight theme                                               */
+
+:root {
+    --primary: #00C896;
+    --background: #0A192F;
+    --secondary-bg: #112240;
+    --accent: #40E0D0;
+    --text: #F8FAFC;
+    --card-bg: #1E293B;
+}
+
+/* ── App background ─────────────────────────────────────────────────────── */
+.stApp {
+    background: linear-gradient(180deg, #0A192F 0%, #0E1117 100%);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+[data-testid="stHeader"] {
+    background: linear-gradient(90deg, #112240, #0A192F);
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #112240 0%, #0A192F 100%);
+    border-right: 1px solid rgba(0, 200, 150, 0.15);
+}
+
+/* ── Hero banner ────────────────────────────────────────────────────────── */
+.hero-banner {
+    padding: 1.8rem 1.5rem;
+    background: linear-gradient(135deg, #112240 0%, #1E293B 50%, #0A192F 100%);
+    border-radius: 0.75rem;
+    text-align: center;
+    border: 1px solid rgba(0, 200, 150, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 200, 150, 0.08);
+    margin-bottom: 1rem;
+}
+.hero-banner h1 {
+    margin: 0;
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: -0.5px;
+}
+.hero-banner p {
+    margin-top: 0.4rem;
+    color: #94A3B8;
+    font-size: 1.05rem;
+}
+
+/* ── Global text ────────────────────────────────────────────────────────── */
+.stApp,
+.stApp p,
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6,
+.stApp label,
+[data-testid="stMetricLabel"],
+[data-testid="stMetricValue"],
+[data-testid="stCaptionContainer"] {
+    color: #F8FAFC !important;
+}
+
+/* ── Metric cards ───────────────────────────────────────────────────────── */
+[data-testid="stMetric"] {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 200, 150, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.8rem 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Selectbox / dropdowns ──────────────────────────────────────────────── */
+[data-baseweb="select"],
+[data-baseweb="select"] *,
+[data-baseweb="popover"] *,
+[role="listbox"] *,
+div[role="combobox"] *,
+.stSelectbox * {
+    color: #000080 !important;
+    background-color: #FFFFFF !important;
+}
+div[role="combobox"] {
+    color: #000080 !important;
+    background-color: #FFFFFF !important;
+}
+
+/* ── Sidebar labels ─────────────────────────────────────────────────────── */
+[data-testid="stSidebar"] .stSelectbox label,
+[data-testid="stSidebar"] .stSelectbox > label,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] label * {
+    color: #94A3B8 !important;
+}
+
+/* ── Sidebar buttons ────────────────────────────────────────────────────── */
+[data-testid="stSidebar"] .stButton button,
+[data-testid="stSidebar"] .stButton button *,
+[data-testid="stSidebar"] button,
+[data-testid="stSidebar"] button * {
+    color: #000080 !important;
+    background-color: #FFFFFF !important;
+    border-color: #000080 !important;
+    border-radius: 0.4rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+[data-testid="stSidebar"] .stButton button:hover {
+    background-color: var(--accent) !important;
+    color: #000 !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 2px 10px rgba(64, 224, 208, 0.3);
+}
+
+/* ── Sidebar button internals ───────────────────────────────────────────── */
+[data-testid="stSidebar"] .stButton > button > div,
+[data-testid="stSidebar"] .stButton > button > div > span,
+[data-testid="stSidebar"] button > div,
+[data-testid="stSidebar"] button > div > span,
+[data-testid="stSidebar"] button[role="button"] > div > span {
+    color: #000080 !important;
+    background-color: #FFFFFF !important;
+}
+
+/* ── Tabs ───────────────────────────────────────────────────────────────── */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px;
+}
+.stTabs [data-baseweb="tab"] {
+    background-color: var(--card-bg);
+    border-radius: 0.4rem 0.4rem 0 0;
+    border: 1px solid rgba(0, 200, 150, 0.15);
+    color: #94A3B8 !important;
+    padding: 0.5rem 1rem;
+}
+.stTabs [aria-selected="true"] {
+    background-color: rgba(0, 200, 150, 0.15) !important;
+    color: var(--primary) !important;
+    border-bottom-color: var(--primary) !important;
+}
+
+/* ── Expander ───────────────────────────────────────────────────────────── */
+.streamlit-expanderHeader {
+    background-color: var(--card-bg);
+    border-radius: 0.4rem;
+    color: #F8FAFC !important;
+}
+
+/* ── Download button ────────────────────────────────────────────────────── */
+.stDownloadButton button {
+    background-color: var(--primary) !important;
+    color: #000 !important;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.4rem;
+}
+.stDownloadButton button:hover {
+    background-color: var(--accent) !important;
+    box-shadow: 0 2px 10px rgba(64, 224, 208, 0.3);
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+.footer {
+    text-align: center;
+    color: #64748B;
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(0, 200, 150, 0.1);
+}
+.footer a {
+    color: var(--primary);
+    text-decoration: none;
+}
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* ── File uploader ──────────────────────────────────────────────────────── */
+[data-testid="stFileUploader"] {
+    border: 1px dashed rgba(0, 200, 150, 0.3);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}

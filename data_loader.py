@@ -28,15 +28,18 @@ log = logging.getLogger(__name__)
 # ─── Technical indicators ────────────────────────────────────────────────────
 
 def _sma(close: pd.Series, w: int) -> pd.Series:
-    return close.rolling(w).mean()
+    window = max(2, min(w, len(close)))
+    return close.rolling(window, min_periods=1).mean().bfill().ffill()
 
 
 def _rsi(close: pd.Series, w: int) -> pd.Series:
-    delta = close.diff()
-    gain  = delta.clip(lower=0).rolling(w).mean()
-    loss  = (-delta.clip(upper=0)).rolling(w).mean()
+    window = max(2, min(w, len(close)))
+    delta = close.diff().fillna(0)
+    gain  = delta.clip(lower=0).rolling(window, min_periods=1).mean()
+    loss  = (-delta.clip(upper=0)).rolling(window, min_periods=1).mean()
     rs    = gain / (loss + 1e-9)          # avoid division by zero
-    return 100 - 100 / (1 + rs)
+    rsi   = 100 - 100 / (1 + rs)
+    return rsi.bfill().ffill()
 
 
 # ─── Main loader ─────────────────────────────────────────────────────────────
@@ -61,7 +64,7 @@ def load_ticker(ticker: str, start: str, end: str) -> pd.DataFrame:
     df = raw[["Open", "High", "Low", "Close", "Volume"]].copy()
     df["SMA"]    = _sma(df["Close"], cfg.SMA_WINDOW)
     df["RSI"]    = _rsi(df["Close"], cfg.RSI_WINDOW)
-    df["Target"] = df["Close"].shift(-1)   # predict next-day close
+    df["Target"] = df["Close"].shift(-1).bfill()   # predict next-day close
     df.dropna(inplace=True)
 
     log.info("%s -> %d rows  |  Close %.2f - %.2f",
@@ -76,7 +79,7 @@ FEATURE_COLS = ["Open", "High", "Low", "Close", "Volume", "SMA", "RSI"]
 
 def prepare_data(df: pd.DataFrame):
     """
-    Chronological 80/20 split followed by leak-free Min-Max scaling.
+    Chronological split followed by leak-free Min-Max scaling.
 
     Returns
     -------
@@ -89,6 +92,8 @@ def prepare_data(df: pd.DataFrame):
     y = df["Target"].values.reshape(-1, 1)
 
     cut = int(len(X) * (1 - cfg.TEST_SIZE))
+    if cut < 2:
+        cut = max(1, len(X) // 2)
 
     X_tr, X_te = X[:cut], X[cut:]
     y_tr, y_te = y[:cut], y[cut:]
@@ -112,15 +117,20 @@ def make_sequences(
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Build overlapping look-back windows for LSTM.
-
-    Using seq_len=1 (as many tutorials do) gives the LSTM no temporal
-    context — it degenerates into a Dense layer.  seq_len=60 means each
-    sample contains 60 consecutive trading days.
+    If X is shorter than seq_len, uses edge padding so sequences are always valid.
 
     Returns X_seq (n, seq_len, features) and y_seq (n,).
     """
     Xs, ys = [], []
-    for i in range(seq_len, len(X)):
-        Xs.append(X[i - seq_len : i])
-        ys.append(y[i])
+    if len(X) <= seq_len:
+        for i in range(len(X)):
+            seq = X[: i + 1]
+            pad_len = seq_len - len(seq)
+            padded = np.pad(seq, ((pad_len, 0), (0, 0)), mode="edge")
+            Xs.append(padded)
+            ys.append(y[i])
+    else:
+        for i in range(seq_len, len(X)):
+            Xs.append(X[i - seq_len : i])
+            ys.append(y[i])
     return np.array(Xs), np.array(ys)
