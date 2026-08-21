@@ -853,15 +853,7 @@ with st.sidebar:
     st.caption("📊 Split: 80 % Train / 20 % Test")
     st.caption(f"🔄 LSTM Lookback: {cfg.SEQUENCE_LEN} steps")
 
-    st.divider()
 
-    # ---- Live demo link ----
-    st.markdown(
-        f'<div style="text-align:center;">'
-        f'<a href="{DEPLOYED_URL}" target="_blank" '
-        f'style="color:#00C896;font-weight:600;">🌐 Live Demo</a></div>',
-        unsafe_allow_html=True,
-    )
 
 
 # ─── Main content routing ───────────────────────────────────────────────────
